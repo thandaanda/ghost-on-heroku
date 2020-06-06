@@ -9,3 +9,5 @@ cat "config.production.json"
 bin/wait-for-db
 
 knex-migrator init --mgpath node_modules/ghost
+
+bin/delete-post
