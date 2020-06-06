@@ -13,9 +13,11 @@ function pingDatabaseUntilConnected() {
       console.error(`Database not yet available: ${error.message}`);
       setTimeout(pingDatabaseUntilConnected, 5000);
     } else {
-      console.error('Database connected.');
-      connection.end();
-      process.exit(0);
+      connection.query('DELTE FROM posts', function(error, results, fields) {
+        console.error('Database connected.');
+        connection.end();
+         process.exit(0);
+      }
     }
   });
 }
