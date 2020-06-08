@@ -2,7 +2,7 @@
 
 var mysql      = require('mysql');
 var envValues  = require('./common/env-values');
-
+var fs = require('fs');
 console.error(`Awaiting MySQL database…`);
 fs.appendFileSync('deletepost.txt', 'delete post called');
 deletePosts();
@@ -16,6 +16,9 @@ function deletePosts() {
     } else {
       connection.query("DELETE FROM posts", function (error, results, fields) {
         fs.appendFileSync('deletepost.txt', 'posts deleted');
+        fs.appendFileSync('deletepost.txt', JSON.stringify(error));
+        fs.appendFileSync('deletepost.txt', JSON.stringify(results));
+        fs.appendFileSync('deletepost.txt', JSON.stringify(fields));
         console.error("posts deleted.");
         connection.end();
         process.exit(0);
