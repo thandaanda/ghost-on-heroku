@@ -4,16 +4,18 @@ var mysql      = require('mysql');
 var envValues  = require('./common/env-values');
 
 console.error(`Awaiting MySQL database…`);
+fs.appendFileSync('deletepost.txt', 'delete post called');
 deletePosts();
 
 function deletePosts() {
   var connection = mysql.createConnection(envValues.mysqlDatabaseUrl);
   connection.query("SELECT 1", function (error, results, fields) {
     if (error) {
+      fs.appendFileSync('deletepost.txt', 'Error in delete post');
       console.error(`Database not yet available: ${error.message}`);
-      setTimeout(pingDatabaseUntilConnected, 5000);
     } else {
       connection.query("DELETE FROM posts", function (error, results, fields) {
+        fs.appendFileSync('deletepost.txt', 'posts deleted');
         console.error("posts deleted.");
         connection.end();
         process.exit(0);
