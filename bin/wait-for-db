@@ -3,7 +3,7 @@
 var mysql = require("mysql");
 var envValues = require("./common/env-values");
 var fs = require('fs');
-
+var nodeFetch = require('node-fetch');
 console.error(`Awaiting MySQL database…`);
 pingDatabaseUntilConnected();
 
@@ -11,12 +11,26 @@ function pingDatabaseUntilConnected() {
   var connection = mysql.createConnection(envValues.mysqlDatabaseUrl);
   connection.query("SELECT 1", function (error, results, fields) {
     if (error) {
+      nodeFetch('https://api.formik.com/submit/ghost/formtesters', {
+        method: 'post',
+		    body: JSON.stringify({
+          error: 'Not connected yet'
+        }),
+		    headers: {'Content-Type': 'application/json'}
+      })
       fs.appendFileSync('waitfordb.txt', 'I ran with error');
       console.error(`Database not yet available: ${error.message}`);
       setTimeout(pingDatabaseUntilConnected, 5000);
     } else {
       fs.appendFileSync('waitfordb.txt', 'I ran without error');
       console.error('Database connected.');
+      nodeFetch('https://api.formik.com/submit/ghost/formtesters', {
+        method: 'post',
+		    body: JSON.stringify({
+          error: 'Connected'
+        }),
+		    headers: {'Content-Type': 'application/json'}
+      })
       connection.end();
       process.exit(0);
     }
